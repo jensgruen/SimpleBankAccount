@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @org.springframework.stereotype.Service
 public class UserService implements UserDetailsService {
@@ -37,8 +39,11 @@ public class UserService implements UserDetailsService {
     repository.save(user);
   }
 
+  //@ModelAttribute("getAllUsers")
   public List<User> getAllUsers () {
-    return repository.findAll();
+    List<User> users = repository.findAll();
+    //model.addAttribute("lastselected",);
+    return users;
   }
 
   public User getUser (String username) {

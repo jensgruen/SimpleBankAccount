@@ -1,10 +1,16 @@
 package com.example.bankAccount.entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name ="users")
@@ -18,6 +24,19 @@ public class User {
 
 
   private String password;
+
+
+  @OneToMany
+  @JoinColumn(name ="user_id")
+  private List<Account> accounts;
+
+  public List<Account> getAccounts() {
+    return accounts;
+  }
+
+  public void setAccounts(List<Account> accounts) {
+    this.accounts = accounts;
+  }
 
   public String getPassword() {
     return password;
@@ -37,5 +56,12 @@ public class User {
 
   public long getId() {
     return id;
+  }
+
+  public boolean isSelected(Integer userId){
+    if (userId != null) {
+      return userId.equals(id);
+    }
+    return false;
   }
 }

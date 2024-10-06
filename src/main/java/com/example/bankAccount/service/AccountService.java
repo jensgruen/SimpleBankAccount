@@ -1,9 +1,9 @@
 package com.example.bankAccount.service;
 
 import com.example.bankAccount.entity.Account;
-import com.example.bankAccount.entity.User;
 import com.example.bankAccount.repository.AccountRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AccountService {
@@ -33,6 +33,14 @@ public class AccountService {
     Account account = accountRepository.findByAccountNumber(accountNumber);
     account.setBalance(account.getBalance() - withdrawMoney);
     return accountRepository.save(account);
+  }
+
+  @Transactional
+  public Account transferAccount (String accountNumber, Double transferMoney, String transferAccountNumber) {
+    Account account = accountRepository.findByAccountNumber(accountNumber);
+    Account transferAccount = accountRepository.findByAccountNumber(transferAccountNumber);
+    transferAccount.setBalance(transferAccount.getBalance() + transferMoney);
+    return accountRepository.save(transferAccount);
   }
 
 

@@ -42,7 +42,6 @@ public class UserService implements UserDetailsService {
   //@ModelAttribute("getAllUsers")
   public List<User> getAllUsers () {
     List<User> users = repository.findAll();
-    //model.addAttribute("lastselected",);
     return users;
   }
 

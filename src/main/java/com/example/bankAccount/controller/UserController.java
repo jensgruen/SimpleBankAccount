@@ -2,10 +2,10 @@ package com.example.bankAccount.controller;
 
 import com.example.bankAccount.entity.Account;
 import com.example.bankAccount.entity.User;
+import com.example.bankAccount.repository.AccountRepository;
 import com.example.bankAccount.repository.UserRepository;
 import com.example.bankAccount.service.AccountService;
 import com.example.bankAccount.service.UserService;
-import com.example.bankAccount.util.AccountNumberGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @org.springframework.stereotype.Controller
-//@RequestMapping("/home")
 public class UserController {
 
 private final UserService service;
@@ -25,12 +24,15 @@ private final UserRepository userRepository;
 
 private final AccountService accountService;
 
+private final AccountRepository accountRepository;
+
 
   public UserController(UserService service, UserRepository userRepository,
-      AccountService accountService) {
+      AccountService accountService, AccountRepository accountRepository) {
     this.service = service;
     this.userRepository = userRepository;
     this.accountService = accountService;
+    this.accountRepository = accountRepository;
   }
 
 
@@ -40,13 +42,10 @@ private final AccountService accountService;
 
   private String getLoggedInUser () {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    System.out.println(auth.getDetails());
     return auth.getName(); //get logged in username
   }
 
 
-
-  //List<User> users = userList();
   @GetMapping("/home")
   public String home (Model model, @RequestParam(required = false) String accountId) {
 
@@ -114,6 +113,8 @@ private final AccountService accountService;
 
     return "withdraw";}
 
+
+
   @PostMapping("/transactions/withdraw")
   public String withdrawMoney (@RequestParam double withdrawMoney, @RequestParam String accountNumber) {
 
@@ -122,21 +123,45 @@ private final AccountService accountService;
     return "redirect:/home";
   }
 
+  @GetMapping("/transactions/transfer")
+  public String getTransferMoney (Model model, @RequestParam(required = false) String accountId) {
+    String username = getLoggedInUser();
+    User user = userRepository.findByUsername(username);
+    List<Account> userAccounts = user.getAccounts();
+    List<String> accounts = new ArrayList<>();
+    List<Account> accountsFull = new ArrayList<>();
+
+    for (int i=0; i< userAccounts.size(); i++) {
+      accounts.add(userAccounts.get(i).getAccountNumber());
+      accountsFull.add(userAccounts.get(i));
+      if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
+        Account account = accountsFull.get(i);
+      }
+    }
+    model.addAttribute("users", accounts);
+
+    return "transfer";}
 
 
+  @PostMapping("/transactions/transfer")
+  public String transferMoney (@RequestParam double transferMoney,
+      @RequestParam String accountNumber,
+      @RequestParam String transferAccountNumber) {
 
-//  @PostMapping("/account")
-//  public String createNewAccount (@RequestParam String accountType,
-//      @RequestParam double initialDeposit) {
-//    Account account = new Account();
-//    account.setAccountNumber( AccountNumberGenerator.generateAccountNumber());
-//    account.setBalance(initialDeposit);
-//    account.setUser(userRepository.findByUsername(getLoggedInUser()));
-//    account.setAccountType(accountType);
-//    accountService.saveAccountToDatabase(account);
-//    return "redirect:/home";
-//  }
+    if (accountRepository.findByAccountNumber(transferAccountNumber) != null) {
+      if (accountService.withdrawAccount(accountNumber, transferMoney).getBalance() < 0 &&
+          accountRepository.findByAccountNumber(transferAccountNumber) != null) {
+        accountService.depositAccount(accountNumber, transferMoney);
+        return "redirect:/transactions/transfer?error";
+      } else {
+        accountService.transferAccount(accountNumber, transferMoney, transferAccountNumber);
+        return "redirect:/home";
+      }
+    } else {
+      return "redirect:/transactions/transfer?error1";
+    }
 
+  }
 
 
   @GetMapping("/signup")
@@ -164,21 +189,5 @@ private final AccountService accountService;
   }
 
 
-  //@GetMapping("/")
-
-
-//  @PostMapping("/login")
-//  public String loginUser (@RequestParam String username,
-//      @RequestParam String password
-//  ) {
-//    return "redirect:/home";
-//  }
-
-//  @PostMapping("/signUpSuccess")
-//  public String loginUserSuccess (@RequestParam String username,
-//      @RequestParam String password
-//  ) {
-//    return "redirect:/home";
-//  }
 
 }

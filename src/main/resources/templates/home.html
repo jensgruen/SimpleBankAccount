@@ -42,17 +42,23 @@
         <li class="nav-item">
           <a class="nav-link" th:href="@{/transactions/transfer}">Transfer Money</a>
         </li>
+
         <li class="dropdown">
+          <form action="#" th:action="@{/home}" method ="get">
           <div class="dropdown">
-            <select name ="user" class="form-select" aria-label="Default select example">
+            <select name ="accountId" class="form-select" aria-label="Default select example" onchange='if(this.value != 0) { this.form.submit(); }'>
               <option selected>Select your Bank Account</option>
-              <option th:each="user : ${users}"  th:text="${user}">
+              <option th:each="users : ${users}"  th:text="${users}">
 <!--                      th:value="${user.id}"-->
 <!--                      th:selected="${user.isSelected(lastselected)}"-->
 <!--                      th:text="${user}">-->
 
             </select>
+          </div>
+          </form>
         </li>
+
+
       </ul>
     </div>
       </ul>
@@ -60,11 +66,16 @@
   </div>
 </nav>
 
+
+
+
 <div class="container mt-5">
   <div class="text-center">
     <h1 class="mb-4">Welcome to the Online Banking System</h1>
   </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

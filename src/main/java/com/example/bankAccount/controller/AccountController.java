@@ -43,9 +43,13 @@ public class AccountController {
     account.setAccountNumber( AccountNumberGenerator.generateAccountNumber());
     account.setBalance(initialDeposit);
     account.setUser(userRepository.findByUsername(getLoggedInUser()));
+    account.setAccountType(accountType);
     accountService.saveAccountToDatabase(account);
     return "redirect:/home";
   }
+
+
+
 
 
 }

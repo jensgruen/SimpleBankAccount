@@ -1,7 +1,7 @@
 # SimpleBankAccount
 
 - This is a simple Bank Account in html format
-- It has a signUp and Login with error handling (basic BCrpt Authentication)
+- It has a signUp and Login with error handling (basic BCrypt Authentication)
 - You can create a new Account with some money, deposit money, withdraw money and transfer money to another bank account
 - All includes error handling
 - It works with Spring boot

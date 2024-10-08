@@ -10,20 +10,6 @@
   <div class="text-center">
     <h1 class="mb-4">Withdraw Money</h1>
 
-
-    <!--    <form action="#" th:action="@{/home}" method ="get">-->
-    <!--      <div class="dropdown">-->
-    <!--        <select name ="accountId" class="form-select" aria-label="Default select example" onchange='if(this.value != 0) { this.form.submit(); }'>-->
-    <!--          <option selected>Select your Bank Account</option>-->
-    <!--          <option th:each="users : ${users}"  th:text="${users}">-->
-    <!--            &lt;!&ndash;                      th:value="${user.id}"&ndash;&gt;-->
-    <!--            &lt;!&ndash;                      th:selected="${user.isSelected(lastselected)}"&ndash;&gt;-->
-    <!--            &lt;!&ndash;                      th:text="${user}">&ndash;&gt;-->
-
-    <!--        </select>-->
-    <!--      </div>-->
-    <!--    </form>-->
-
     <form action="#"  th:action="@{/transactions/withdraw}" method="post">
 
       <div class="mb-3">

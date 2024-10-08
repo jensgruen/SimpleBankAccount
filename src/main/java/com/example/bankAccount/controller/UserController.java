@@ -6,6 +6,7 @@ import com.example.bankAccount.repository.AccountRepository;
 import com.example.bankAccount.repository.UserRepository;
 import com.example.bankAccount.service.AccountService;
 import com.example.bankAccount.service.UserService;
+import com.example.bankAccount.util.Round;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.core.Authentication;
@@ -54,16 +55,18 @@ private final AccountRepository accountRepository;
     List<Account> userAccounts = user.getAccounts();
     List<String> accounts = new ArrayList<>();
     List<Account> accountsFull = new ArrayList<>();
+    Account account = null;
 
     for (int i=0; i< userAccounts.size(); i++) {
       accounts.add(userAccounts.get(i).getAccountNumber());
       accountsFull.add(userAccounts.get(i));
       if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
-        Account account = accountsFull.get(i);
+        account = accountsFull.get(i);
+        model.addAttribute("balance", Round.roundTo2Digits(account.getBalance()));
       }
     }
     model.addAttribute("users", accounts);
-
+    model.addAttribute("accountNumber", accountId);
     return "home";
   }
 

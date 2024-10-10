@@ -14,12 +14,13 @@ public class AccountService {
     this.accountRepository = accountRepository;
   }
 
-  //Save Account to database
+
+  public Account getAccountByAccountNumber (String accountNumber) {
+    return accountRepository.findByAccountNumber(accountNumber);
+  }
+
   public Account saveAccountToDatabase (Account account) {
     return accountRepository.save(account);
-  }
-  public Account getAccountById (Integer accountId) {
-    return accountRepository.getReferenceById(accountId);
   }
 
   public Account depositAccount (String accountNumber, Double depositMoney) {
@@ -28,23 +29,24 @@ public class AccountService {
     return accountRepository.save(account);
   }
 
-
-  public Account withdrawAccount (String accountNumber, Double withdrawMoney) {
+  public Account withdrawAccount (String accountNumber, Double withdrawMoney) throws Exception {
     Account account = accountRepository.findByAccountNumber(accountNumber);
-    account.setBalance(account.getBalance() - withdrawMoney);
-    return accountRepository.save(account);
+    if (account.getBalance() - withdrawMoney <0) {
+      throw new Exception();
+    } else {
+      account.setBalance(account.getBalance() - withdrawMoney);
+      return accountRepository.save(account);
+    }
   }
 
   @Transactional
-  public Account transferAccount (String accountNumber, Double transferMoney, String transferAccountNumber) {
-    Account account = accountRepository.findByAccountNumber(accountNumber);
-    Account transferAccount = accountRepository.findByAccountNumber(transferAccountNumber);
-    transferAccount.setBalance(transferAccount.getBalance() + transferMoney);
-    return accountRepository.save(transferAccount);
+  public void transferAccount (String accountNumber, Double transferMoney, String transferAccountNumber)
+      throws Exception {
+
+          Account sendAccount = withdrawAccount(accountNumber,transferMoney);
+          Account receiveAccount = depositAccount(transferAccountNumber, transferMoney);
+
   }
-
-
-
 
 
 }

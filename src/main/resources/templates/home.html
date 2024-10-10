@@ -53,6 +53,15 @@ width: 550px;
 </head>
 <body>
 
+<div th:if="${param.error}" class="alert alert-danger" role="alert">
+  No sufficient credits
+</div>
+
+<div th:if="${param.transferError}" class="alert alert-danger" role="alert">
+  No sufficient credits to complete transfer
+</div>
+
+
 <!-- User Navigation Bar -->
 <nav class="navbar navbar-expand navbar-light bg-light">
   <div class="container-fluid">
@@ -92,9 +101,9 @@ width: 550px;
         <li class="dropdown">
           <form action="#" th:action="@{/home}" method ="get">
           <div class="dropdown">
-            <select name ="accountId" class="form-select" aria-label="Default select example" onchange='if(this.value != 0) { this.form.submit(); }'>
+            <select name ="accountNumber" class="form-select" aria-label="Default select example" onchange='if(this.value != 0) { this.form.submit(); }'>
               <option selected>Select your Bank Account</option>
-              <option th:each="users : ${users}"  th:text="${users}">
+              <option th:each="accountNumbers : ${accountNumbersList}"  th:text="${accountNumbers}">
             </select>
           </div>
           </form>
@@ -108,19 +117,12 @@ width: 550px;
 
 
 
-
-<!--<div class="container mt-5">-->
-<!--  <div class="text-center">-->
-<!--    <h1 class="mb-4">Welcome to the Online Banking System</h1>-->
-<!--  </div>-->
-<!--</div>-->
-
 <div  action="#" th:action="@{/home}" method ="get" class="grid-container mt-5">
   <div class="item1 ms-2 ">Welcome to the online Banking System</div>
-  <div th:if="${param.accountId}" class="item2 ms-2">Account</div>
-  <div th:if="${param.accountId}" class="item4"></div>
-  <div th:if="${param.accountId}" th:text ="${accountNumber}" class="item5 ms-2" ></div>
-  <div th:if="${param.accountId}" th:text ="${balance}" class="item6" ></div>
+  <div th:if="${param.accountNumber}" class="item2 ms-2">Account</div>
+  <div th:if="${param.accountNumber}" class="item4"></div>
+  <div th:if="${param.accountNumber}" th:text ="${accountNumber}" class="item5 ms-2" ></div>
+  <div th:if="${param.accountNumber}" th:text ="${balance}" class="item6" ></div>
 </div>
 
 

@@ -31,10 +31,6 @@ public class Account {
     return accountId;
   }
 
-  public void setAccountId(int accountId) {
-    this.accountId = accountId;
-  }
-
   public String getAccountNumber() {
     return accountNumber;
   }

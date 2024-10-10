@@ -1,91 +1,54 @@
 package com.example.bankAccount.controller;
 
 import com.example.bankAccount.entity.Account;
-import com.example.bankAccount.entity.User;
-import com.example.bankAccount.repository.AccountRepository;
-import com.example.bankAccount.repository.UserRepository;
 import com.example.bankAccount.service.AccountService;
 import com.example.bankAccount.service.UserService;
 import com.example.bankAccount.util.Round;
-import java.util.ArrayList;
 import java.util.List;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 @org.springframework.stereotype.Controller
 public class UserController {
 
 private final UserService service;
 
-private final UserRepository userRepository;
-
 private final AccountService accountService;
 
-private final AccountRepository accountRepository;
 
 
-  public UserController(UserService service, UserRepository userRepository,
-      AccountService accountService, AccountRepository accountRepository) {
+  public UserController(UserService service,
+      AccountService accountService) {
     this.service = service;
-    this.userRepository = userRepository;
     this.accountService = accountService;
-    this.accountRepository = accountRepository;
   }
 
-
-  private List<User> userList () {
-    return service.getAllUsers();
-  }
-
-  private String getLoggedInUser () {
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return auth.getName(); //get logged in username
-  }
 
 
   @GetMapping("/home")
-  public String home (Model model, @RequestParam(required = false) String accountId) {
+  public String home (Model model, @RequestParam(required = false) String accountNumber) {
 
-    String username = getLoggedInUser();
-    User user = userRepository.findByUsername(username);
-    List<Account> userAccounts = user.getAccounts();
-    List<String> accounts = new ArrayList<>();
-    List<Account> accountsFull = new ArrayList<>();
-    Account account = null;
+    List<Account> accountsOfLoggedInUser=  service.listAccountsFromLoggedInUser();
+    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(accountsOfLoggedInUser);
 
-    for (int i=0; i< userAccounts.size(); i++) {
-      accounts.add(userAccounts.get(i).getAccountNumber());
-      accountsFull.add(userAccounts.get(i));
-      if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
-        account = accountsFull.get(i);
-        model.addAttribute("balance", Round.roundTo2Digits(account.getBalance()));
-      }
+    if (accountNumber != null) {
+      Account account = accountService.getAccountByAccountNumber(accountNumber);
+      model.addAttribute("balance", Round.roundTo2Digits(account.getBalance()));
     }
-    model.addAttribute("users", accounts);
-    model.addAttribute("accountNumber", accountId);
+
+    model.addAttribute("accountNumbersList", listAccountNumbers);
+    model.addAttribute("accountNumber", accountNumber);
     return "home";
   }
 
   @GetMapping("/transactions/deposit")
-  public String getDepositMoney (Model model, @RequestParam(required = false) String accountId) {
-    String username = getLoggedInUser();
-    User user = userRepository.findByUsername(username);
-    List<Account> userAccounts = user.getAccounts();
-    List<String> accounts = new ArrayList<>();
-    List<Account> accountsFull = new ArrayList<>();
+  public String getDepositMoney (Model model, @RequestParam(required = false) String accountNumber) {
 
-    for (int i=0; i< userAccounts.size(); i++) {
-      accounts.add(userAccounts.get(i).getAccountNumber());
-      accountsFull.add(userAccounts.get(i));
-      if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
-        Account account = accountsFull.get(i);
-      }
-    }
-    model.addAttribute("users", accounts);
+    List<Account> accountsOfLoggedInUser=  service.listAccountsFromLoggedInUser();
+    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(accountsOfLoggedInUser);
+    Account account = accountService.getAccountByAccountNumber(accountNumber);
+    model.addAttribute("users", listAccountNumbers);
 
     return "deposit";}
 
@@ -94,54 +57,40 @@ private final AccountRepository accountRepository;
 
     accountService.depositAccount(accountNumber,depositMoney);
 
-    return "redirect:/home";
+    return "redirect:/home?accountNumber="+accountNumber;
   }
 
   @GetMapping("/transactions/withdraw")
-  public String getwithdrawMoney (Model model, @RequestParam(required = false) String accountId) {
-    String username = getLoggedInUser();
-    User user = userRepository.findByUsername(username);
-    List<Account> userAccounts = user.getAccounts();
-    List<String> accounts = new ArrayList<>();
-    List<Account> accountsFull = new ArrayList<>();
+  public String getWithdrawMoney (Model model, @RequestParam(required = false) String accountNumber) {
 
-    for (int i=0; i< userAccounts.size(); i++) {
-      accounts.add(userAccounts.get(i).getAccountNumber());
-      accountsFull.add(userAccounts.get(i));
-      if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
-        Account account = accountsFull.get(i);
-      }
-    }
-    model.addAttribute("users", accounts);
+    List<Account> accountsOfLoggedInUser=  service.listAccountsFromLoggedInUser();
+    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(accountsOfLoggedInUser);
+    Account account = accountService.getAccountByAccountNumber(accountNumber);
+    model.addAttribute("users", listAccountNumbers);
 
     return "withdraw";}
 
 
-
   @PostMapping("/transactions/withdraw")
-  public String withdrawMoney (@RequestParam double withdrawMoney, @RequestParam String accountNumber) {
+  public String withdrawMoney (@RequestParam double withdrawMoney,
+      @RequestParam String accountNumber) {
 
-    accountService.withdrawAccount(accountNumber,withdrawMoney);
+    try {
+      accountService.withdrawAccount(accountNumber,withdrawMoney);
+    } catch (Exception e) {
+      return "redirect:/home?error?accountNumber=" +accountNumber;
+    }
 
-    return "redirect:/home";
+    return "redirect:/home?accountNumber="+accountNumber;
   }
 
   @GetMapping("/transactions/transfer")
-  public String getTransferMoney (Model model, @RequestParam(required = false) String accountId) {
-    String username = getLoggedInUser();
-    User user = userRepository.findByUsername(username);
-    List<Account> userAccounts = user.getAccounts();
-    List<String> accounts = new ArrayList<>();
-    List<Account> accountsFull = new ArrayList<>();
+  public String getTransferMoney (Model model, @RequestParam(required = false) String accountNumber) {
 
-    for (int i=0; i< userAccounts.size(); i++) {
-      accounts.add(userAccounts.get(i).getAccountNumber());
-      accountsFull.add(userAccounts.get(i));
-      if (accountsFull.get(i).getAccountNumber().equals(accountId)) {
-        Account account = accountsFull.get(i);
-      }
-    }
-    model.addAttribute("users", accounts);
+    List<Account> accountsOfLoggedInUser=  service.listAccountsFromLoggedInUser();
+    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(accountsOfLoggedInUser);
+    Account account = accountService.getAccountByAccountNumber(accountNumber);
+    model.addAttribute("users", listAccountNumbers);
 
     return "transfer";}
 
@@ -151,20 +100,14 @@ private final AccountRepository accountRepository;
       @RequestParam String accountNumber,
       @RequestParam String transferAccountNumber) {
 
-    if (accountRepository.findByAccountNumber(transferAccountNumber) != null) {
-      if (accountService.withdrawAccount(accountNumber, transferMoney).getBalance() < 0 &&
-          accountRepository.findByAccountNumber(transferAccountNumber) != null) {
-        accountService.depositAccount(accountNumber, transferMoney);
-        return "redirect:/transactions/transfer?error";
-      } else {
-        accountService.transferAccount(accountNumber, transferMoney, transferAccountNumber);
-        return "redirect:/home";
-      }
-    } else {
-      return "redirect:/transactions/transfer?error1";
+   try {
+      accountService.transferAccount(accountNumber, transferMoney, transferAccountNumber);
+    } catch (Exception e) {
+      return "redirect:/home?transferError?accountNumber=" + accountNumber;
     }
 
-  }
+    return "redirect:/home?accountNumber=" + accountNumber;
+    }
 
 
   @GetMapping("/signup")
@@ -172,7 +115,6 @@ private final AccountRepository accountRepository;
     return "signup";
   }
 
-  //@RequestParam(required = false) boolean error
   @GetMapping("/login")
   public String login () {
     return "login";

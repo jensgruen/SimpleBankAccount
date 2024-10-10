@@ -78,7 +78,7 @@ private final AccountService accountService;
     try {
       accountService.withdrawAccount(accountNumber,withdrawMoney);
     } catch (Exception e) {
-      return "redirect:/home?error?accountNumber=" +accountNumber;
+      return "redirect:/home?accountNumber=" +accountNumber + "&error";
     }
 
     return "redirect:/home?accountNumber="+accountNumber;
@@ -103,7 +103,7 @@ private final AccountService accountService;
    try {
       accountService.transferAccount(accountNumber, transferMoney, transferAccountNumber);
     } catch (Exception e) {
-      return "redirect:/home?transferError?accountNumber=" + accountNumber;
+      return "redirect:/home?accountNumber=" + accountNumber +"&transferError";
     }
 
     return "redirect:/home?accountNumber=" + accountNumber;

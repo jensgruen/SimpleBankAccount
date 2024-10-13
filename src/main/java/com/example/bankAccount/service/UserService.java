@@ -19,6 +19,8 @@ public class UserService implements UserDetailsService {
 
   private  final PasswordEncoder passwordEncoder;
 
+//  private final EntityManagerConfig entityManagerConfig;
+
 
   public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
     this.repository = repository;
@@ -78,6 +80,8 @@ public class UserService implements UserDetailsService {
       }
     return accounts;
     }
+
+
 
 
 

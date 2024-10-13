@@ -41,7 +41,7 @@ public class AccountController {
        @RequestParam double initialDeposit) {
     Account account = new Account();
     account.setAccountNumber( AccountNumberGenerator.generateAccountNumber());
-    account.setBalance(initialDeposit);
+    //account.setBalance(initialDeposit);
     account.setUser(userRepository.findByUsername(getLoggedInUser()));
     account.setAccountType(accountType);
     accountService.saveAccountToDatabase(account);

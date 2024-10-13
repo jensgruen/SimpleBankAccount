@@ -51,8 +51,14 @@ public class Account {
     return balance;
   }
 
-  public void setBalance(double balance) {
+  public void setBalance(double balance) throws Exception {
+
     this.balance = balance;
+
+    if (balance<0) {
+      throw new Exception();
+    }
+
   }
 
   public User getUser() {

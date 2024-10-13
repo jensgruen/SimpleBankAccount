@@ -1,9 +1,12 @@
 package com.example.bankAccount.controller;
 
 import com.example.bankAccount.entity.Account;
+import com.example.bankAccount.repository.AccountRepository;
 import com.example.bankAccount.service.AccountService;
 import com.example.bankAccount.service.UserService;
+import com.example.bankAccount.util.DepositTransactionException;
 import com.example.bankAccount.util.Round;
+import com.example.bankAccount.util.WithdrawalTransactionException;
 import java.util.List;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,8 +81,9 @@ private final AccountService accountService;
     try {
       accountService.withdrawAccount(accountNumber,withdrawMoney);
     } catch (Exception e) {
-      return "redirect:/home?accountNumber=" +accountNumber + "&error";
+      return "redirect:/home?accountNumber=" + accountNumber +"&withdrawError";
     }
+
 
     return "redirect:/home?accountNumber="+accountNumber;
   }
@@ -102,8 +106,10 @@ private final AccountService accountService;
 
    try {
       accountService.transferAccount(accountNumber, transferMoney, transferAccountNumber);
-    } catch (Exception e) {
-      return "redirect:/home?accountNumber=" + accountNumber +"&transferError";
+    } catch (DepositTransactionException e) {
+     return "redirect:/home?accountNumber=" + accountNumber + "&depositError";
+   } catch (WithdrawalTransactionException e) {
+      return "redirect:/home?accountNumber=" + accountNumber +"&withdrawError";
     }
 
     return "redirect:/home?accountNumber=" + accountNumber;

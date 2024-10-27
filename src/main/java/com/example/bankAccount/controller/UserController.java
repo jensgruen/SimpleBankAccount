@@ -1,13 +1,16 @@
 package com.example.bankAccount.controller;
 
 import com.example.bankAccount.entity.Account;
-import com.example.bankAccount.repository.AccountRepository;
+import com.example.bankAccount.entity.Transfer;
+import com.example.bankAccount.entity.TransferDate;
 import com.example.bankAccount.service.AccountService;
 import com.example.bankAccount.service.UserService;
 import com.example.bankAccount.util.DepositTransactionException;
 import com.example.bankAccount.util.Round;
 import com.example.bankAccount.util.WithdrawalTransactionException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,16 +35,33 @@ private final AccountService accountService;
   @GetMapping("/home")
   public String home (Model model, @RequestParam(required = false) String accountNumber) {
 
-    List<Account> accountsOfLoggedInUser=  service.listAccountsFromLoggedInUser();
-    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(accountsOfLoggedInUser);
+    List<Account> accountsOfLoggedInUser = service.listAccountsFromLoggedInUser();
+    List<String> listAccountNumbers = service.getListOfAccountNumbersFromAccountsFromLoggedInUser(
+        accountsOfLoggedInUser);
 
+    List<Transfer> listOfTransfers = null;
+    List<TransferDate> transferDateList = null;
+    Map<String,List<Transfer>> transfersForEachDate = null;
     if (accountNumber != null) {
       Account account = accountService.getAccountByAccountNumber(accountNumber);
+      listOfTransfers = accountService.getAccountByAccountNumber(
+              accountNumber)
+          .getTransfers();
       model.addAttribute("balance", Round.roundTo2Digits(account.getBalance()));
+
+      //need map with date as key and List<Transfer> as values
+      transfersForEachDate = accountService.createMapOfDatesAndListsOfTransfers(accountNumber);
+      for (Entry<String, List<Transfer>> entry : transfersForEachDate.entrySet()) {
+        System.out.println(entry);
+      }
+
+
     }
 
     model.addAttribute("accountNumbersList", listAccountNumbers);
     model.addAttribute("accountNumber", accountNumber);
+    model.addAttribute("listOfTransfers", listOfTransfers);
+    model.addAttribute("dateTransferMap", transfersForEachDate);
     return "home";
   }
 
@@ -58,7 +78,7 @@ private final AccountService accountService;
   @PostMapping("/transactions/deposit")
   public String DepositMoney (@RequestParam double depositMoney, @RequestParam String accountNumber) {
 
-    accountService.depositAccount(accountNumber,depositMoney);
+    accountService.depositAccount(accountNumber, depositMoney, accountNumber);
 
     return "redirect:/home?accountNumber="+accountNumber;
   }
@@ -79,7 +99,7 @@ private final AccountService accountService;
       @RequestParam String accountNumber) {
 
     try {
-      accountService.withdrawAccount(accountNumber,withdrawMoney);
+      accountService.withdrawAccount(accountNumber,withdrawMoney, accountNumber);
     } catch (Exception e) {
       return "redirect:/home?accountNumber=" + accountNumber +"&withdrawError";
     }

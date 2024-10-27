@@ -26,6 +26,21 @@ width: 550px;
   padding: 10px;
 }
 
+
+.grid-container1 {
+    box-sizing: content-box;
+width: 550px;
+  display: grid;
+   margin: auto;
+
+  grid-template-areas:
+    'footer footer footer footer footer footer1';
+
+  background-color: #D3D3D3;
+  padding: 10px;
+}
+
+
 .item1 {
   text-align: left;
   padding: 15px 0;
@@ -48,6 +63,10 @@ width: 550px;
   text-align: right;
   padding: 1px 20px;
   font-size: 17px;
+}
+
+#accountDetails {
+  display: none;
 }
 </style>
 </head>
@@ -123,13 +142,26 @@ width: 550px;
 
 <div  action="#" th:action="@{/home}" method ="get" class="grid-container mt-5">
   <div class="item1 ms-2 ">Welcome to the online Banking System</div>
-  <div th:if="${param.accountNumber}" class="item2 ms-2">Account</div>
-  <div th:if="${param.accountNumber}" class="item4"></div>
-  <div th:if="${param.accountNumber}" th:text ="${accountNumber}" class="item5 ms-2" ></div>
-  <div th:if="${param.accountNumber}" th:text ="${balance}" class="item6" ></div>
+  <div id="account"  onclick="showHtmlDiv()" style="cursor: pointer;" th:if="${param.accountNumber}" class="item2 ms-2">Account</div>
+  <div onclick="showHtmlDiv()" style="cursor: pointer;" th:if="${param.accountNumber}" class="item4"></div>
+  <div onclick="showHtmlDiv()" style="cursor: pointer;" th:if="${param.accountNumber}" th:text ="${accountNumber}" class="item5 ms-2" ></div>
+  <div onclick="showHtmlDiv()" style="cursor: pointer;" th:if="${param.accountNumber}" th:text ="${balance}" class="item6" ></div>
 </div>
 
+<div id="accountDetails" th:each="date : ${dateTransferMap}">
+  <!-- Thymeleaf loop to generate divs for each entry in the list -->
+  <div id="transferDates" class="grid-container mt-2">
+    <div id="account1"  th:text="${date.key}" class="item2 ms-2"></div>
+    <div th:if="${param.accountNumber}"  class="item4"></div>
+  </div>
 
+   <div class="grid-container1" th:each="transfer : ${date.value}" >
+     <div  th:if="${param.accountNumber}" th:text ="${transfer.accountInfo}" class="item5 ms-2" ></div>
+     <div  th:if="${param.accountNumber}" th:text ="${transfer.transferredMoney}" class="item6" ></div>
+    </div>
+  </div>
+
+  </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -142,6 +174,26 @@ width: 550px;
       }, 5000); // 5 seconds
     });
   });
+</script>
+
+<script>
+function myFunction()
+{
+document.getElementById("accountDetails").style.display = "block";
+}
+</script>
+
+
+<script>
+
+function showHtmlDiv() {
+  var htmlShow = document.getElementById("accountDetails");
+  if (htmlShow.style.display === "none") {
+    htmlShow.style.display = "block";
+  } else {
+    htmlShow.style.display = "none";
+  }
+}
 </script>
 
 </body>

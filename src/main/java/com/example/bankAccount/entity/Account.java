@@ -8,7 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name ="accounts")
@@ -72,4 +74,16 @@ public class Account {
   @ManyToOne
   private User user;
 
+
+  @OneToMany
+  @JoinColumn(name = "account_id")
+  private List<Transfer> transfers;
+
+  public List<Transfer> getTransfers() {
+    return transfers;
+  }
+
+  public void setTransfers(List<Transfer> transfers) {
+    this.transfers = transfers;
+  }
 }

@@ -22,10 +22,6 @@ public class TransferDate {
   public TransferDate() {
   }
 
-  public int getTransferDateId() {
-    return transferDateId;
-  }
-
   public void setTransferDate(String transferDate) {
     this.transferDate = transferDate;
   }

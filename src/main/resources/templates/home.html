@@ -148,7 +148,7 @@ width: 550px;
   <div onclick="showHtmlDiv()" style="cursor: pointer;" th:if="${param.accountNumber}" th:text ="${balance}" class="item6" ></div>
 </div>
 
-<div id="accountDetails" th:each="date : ${dateTransferMap}">
+<div id="accountDetails" th:each="date : ${dateTransferMap}" >
   <!-- Thymeleaf loop to generate divs for each entry in the list -->
   <div id="transferDates" class="grid-container mt-2">
     <div id="account1"  th:text="${date.key}" class="item2 ms-2"></div>
@@ -161,7 +161,7 @@ width: 550px;
     </div>
   </div>
 
-  </div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -19,20 +19,14 @@ public class UserService implements UserDetailsService {
 
   private  final PasswordEncoder passwordEncoder;
 
-//  private final EntityManagerConfig entityManagerConfig;
-
 
   public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
     this.repository = repository;
     this.passwordEncoder = passwordEncoder;
   }
 
-  public boolean existsByUsername(String username) {
-    if (repository.findByUsername(username) != null) {
-      return true;
-    } else {
-      return false;
-  }
+  public boolean doesUserExits(String username) {
+    return repository.findByUsername(username) != null;
   }
 
 
@@ -60,9 +54,9 @@ public class UserService implements UserDetailsService {
        .build();
   }
 
-  private String getLoggedInUser() {
+  public String getLoggedInUser() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    return auth.getName(); //get logged in username
+    return auth.getName();
   }
 
 
@@ -73,16 +67,22 @@ public class UserService implements UserDetailsService {
   }
 
 
-  public List<String> getListOfAccountNumbersFromAccountsFromLoggedInUser (List <Account> accountsOfLoggedInUser) {
+  public List<String> getListOfAccountNumbersFromAccountsFromLoggedInUser () {
+    List<Account> accountsOfLoggedInUser = listAccountsFromLoggedInUser();
     List<String> accounts = new ArrayList<>();
-    for (int i=0; i< accountsOfLoggedInUser.size(); i++) {
-      accounts.add(accountsOfLoggedInUser.get(i).getAccountNumber());
-      }
+    for (Account account : accountsOfLoggedInUser) {
+      accounts.add(account.getAccountNumber());
+    }
     return accounts;
     }
 
-
-
+/*  public List<String> getListOfAccountNumbersFromAccountsFromLoggedInUser (List <Account> accountsOfLoggedInUser) {
+    List<String> accounts = new ArrayList<>();
+    for (Account account : accountsOfLoggedInUser) {
+      accounts.add(account.getAccountNumber());
+    }
+    return accounts;
+  }*/
 
 
   }

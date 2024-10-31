@@ -29,9 +29,6 @@ public class Account {
 
   private double balance;
 
-  public int getAccountId() {
-    return accountId;
-  }
 
   public String getAccountNumber() {
     return accountNumber;

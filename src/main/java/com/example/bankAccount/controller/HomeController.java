@@ -30,12 +30,7 @@ public class HomeController {
   @GetMapping("/home")
   public String home (Model model, @RequestParam(required = false) String accountNumber) {
 
-//    List<Account> accountsOfLoggedInUser = userService.listAccountsFromLoggedInUser();
-//    List<String> listAccountNumbers = userService.getListOfAccountNumbersFromAccountsFromLoggedInUser(
-//        accountsOfLoggedInUser);
-
-        List<String> listAccountNumbers = userService.getListOfAccountNumbersFromAccountsFromLoggedInUser();
-
+    List<String> listAccountNumbers = userService.getListOfAccountNumbersFromAccountsFromLoggedInUser();
     List<Transfer> listOfTransfers = null;
     List<TransferDate> transferDateList = null;
     Map<String,List<Transfer>> transfersForEachDate = null;

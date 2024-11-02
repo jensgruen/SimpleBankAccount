@@ -76,14 +76,6 @@ public class UserService implements UserDetailsService {
     return accounts;
     }
 
-/*  public List<String> getListOfAccountNumbersFromAccountsFromLoggedInUser (List <Account> accountsOfLoggedInUser) {
-    List<String> accounts = new ArrayList<>();
-    for (Account account : accountsOfLoggedInUser) {
-      accounts.add(account.getAccountNumber());
-    }
-    return accounts;
-  }*/
-
 
   }
 

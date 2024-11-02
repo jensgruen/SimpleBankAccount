@@ -17,37 +17,26 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
-
   private String username;
-
-
   private String password;
-
-
   @OneToMany
   @JoinColumn(name ="user_id")
   private List<Account> accounts;
-
   public List<Account> getAccounts() {
     return accounts;
   }
-
   public void setAccounts(List<Account> accounts) {
     this.accounts = accounts;
   }
-
   public String getPassword() {
     return password;
   }
-
   public void setPassword(String password) {
     this.password = password;
   }
-
   public String getUsername() {
     return username;
   }
-
   public void setUsername(String username) {
     this.username = username;
   }

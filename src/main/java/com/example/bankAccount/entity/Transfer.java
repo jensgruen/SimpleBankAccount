@@ -42,13 +42,6 @@ private String transferredMoney;
   public void setAccountInfo(String accountInfo) {
     this.accountInfo = accountInfo;
   }
-//    LocalDate localDate = LocalDate.now();
-//    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MMMM");
-//    localDate.format(formatter);
-//    return localDate;
-//
-//  }
-
 
   public Transfer(String accountNumberReceiver, String transferredMoney, TransferDate transferDate,
       Account account) {
